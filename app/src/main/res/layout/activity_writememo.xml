@@ -145,6 +145,7 @@
                     android:id="@+id/editText"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
+                    android:background="@drawable/memo"
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="textMultiLine" />

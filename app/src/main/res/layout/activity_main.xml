@@ -60,7 +60,7 @@
                     android:id="@+id/taglist"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.1"
                     android:entries="@array/tag_spinner"
                     android:spinnerMode="dialog" />
 
@@ -95,6 +95,13 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:onClick="@{activity::onToDateClicked}" />
+
+                <Button
+                    android:id="@+id/searchBtn"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/ic_search_category_default" />
             </LinearLayout>
 
             <FrameLayout

@@ -71,20 +71,16 @@ public class HomeFragment extends Fragment {
 
         }
 
-
-
         aSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(flag==0){
-
+                if(flag==1){
                     guideText.setEnabled(true);
-                    flag=1;
+                    flag=0;
                 }else{
                     guideText.setEnabled(false);
                     writeFile(path);
-                    flag=0;
-
+                    flag=1;
                 }
             }
         });
