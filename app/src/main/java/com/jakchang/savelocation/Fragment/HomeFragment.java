@@ -1,21 +1,16 @@
 package com.jakchang.savelocation.Fragment;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.Switch;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.jakchang.savelocation.MainActivity;
 import com.jakchang.savelocation.R;
-import com.jakchang.savelocation.databinding.ActivityMainBinding;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,14 +18,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
 
     View mView;
     EditText guideText;
-    Button editBtn;
+    Switch aSwitch;
     int flag=1;
     String path ;
     String guide ="나만의 노트 작성법! \n" +
@@ -59,7 +53,7 @@ public class HomeFragment extends Fragment {
             mView = inflater.inflate(R.layout.activity_homefragment, container, false);
         }
         guideText = (EditText) mView.findViewById(R.id.guideText);
-        editBtn = (Button) mView.findViewById(R.id.editBtn);
+        aSwitch= (Switch) mView.findViewById(R.id.switch1);
         guideText.setEnabled(false);
 
 
@@ -73,23 +67,20 @@ public class HomeFragment extends Fragment {
             writeFile(path);
         }else{
             guideText.setText(getText);
-            Log.d("TAG",getText);
+           // Log.d("TAG",getText);
 
         }
 
 
 
-        editBtn.setOnClickListener(new View.OnClickListener() {
+        aSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(flag==0){
-                    editBtn.setBackgroundColor(0xffffbb33);
-                    editBtn.setText("편집 완료");
+
                     guideText.setEnabled(true);
                     flag=1;
                 }else{
-                    editBtn.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.buttonborder));
-                    editBtn.setText("편집");
                     guideText.setEnabled(false);
                     writeFile(path);
                     flag=0;

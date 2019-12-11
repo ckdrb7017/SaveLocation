@@ -1,6 +1,7 @@
-package com.jakchang.savelocation;
+package com.jakchang.savelocation.Utils;
 
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.Manifest;
+
 import androidx.core.content.ContextCompat;
 
 public class GpsTracker extends Service implements LocationListener {

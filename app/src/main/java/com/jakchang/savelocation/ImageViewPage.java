@@ -2,7 +2,6 @@ package com.jakchang.savelocation;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,13 +10,12 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.jakchang.savelocation.Adapter.ViewPagerAdapter;
+import com.jakchang.savelocation.Utils.DataHolder;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ImageViewPage extends AppCompatActivity {

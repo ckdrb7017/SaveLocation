@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="tag_spinner">
+        <item>전체</item>
         <item>여행</item>
         <item>축제</item>
         <item>모임</item>

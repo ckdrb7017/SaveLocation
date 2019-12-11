@@ -1,4 +1,4 @@
-package com.jakchang.savelocation;
+package com.jakchang.savelocation.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-
-import org.w3c.dom.Text;
+import com.jakchang.savelocation.R;
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 

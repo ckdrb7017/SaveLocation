@@ -1,7 +1,6 @@
-package com.jakchang.savelocation;
+package com.jakchang.savelocation.Utils;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DataHolder {
