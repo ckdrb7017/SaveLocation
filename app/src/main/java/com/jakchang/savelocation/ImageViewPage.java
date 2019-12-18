@@ -37,7 +37,6 @@ public class ImageViewPage extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.extendedImg);
         bitmap = new ArrayList<Bitmap>();
         uri = new Uri[4];
-        attacher = new PhotoViewAttacher(imageView);
 
         for(int i=0; i<4;i++) {
             String key="imageView"+i;

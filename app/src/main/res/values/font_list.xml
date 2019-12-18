@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="font_spinner">
+        <item>air</item>
+        <item>나눔</item>
+        <item>고딕</item>
+        <item>nanum</item>
+    </string-array>
+</resources>

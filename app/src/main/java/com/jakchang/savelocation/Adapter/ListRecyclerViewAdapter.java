@@ -1,9 +1,8 @@
 package com.jakchang.savelocation.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,45 +12,50 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jakchang.savelocation.MemoModel;
+import com.bumptech.glide.Glide;
+import com.jakchang.savelocation.Entity.MemoEntity;
+import com.jakchang.savelocation.Interface.ItemClickListener;
 import com.jakchang.savelocation.R;
-import com.jakchang.savelocation.ViewMemo;
 
 import java.util.List;
 
 public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerViewAdapter.MyViewHolder> {
 
     Context mContext;
-    List<MemoModel> mListItem;
-
+    List<MemoEntity> mListItem;
+    ItemClickListener itemClickListener;
     int position;
-    Uri uri;
-    Bitmap bitmap;
     int width,height;
 
-    public ListRecyclerViewAdapter(Context mContext, List<MemoModel> mListItem){
+    public ListRecyclerViewAdapter(Context mContext, List<MemoEntity> mListItem, ItemClickListener itemClickListener){
         this.mContext = mContext;
         this.mListItem = mListItem;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
 
         View v = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent,false);
-        final MyViewHolder vHolder = new ListRecyclerViewAdapter.MyViewHolder(v);
+        final MyViewHolder vHolder = new MyViewHolder(v);
 
-        width = v.findViewById(R.id.imageView).getWidth();
-        height = v.findViewById(R.id.imageView).getHeight();
 
-        vHolder.imageView.setOnClickListener(new View.OnClickListener() {
+        vHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
                 position = vHolder.getAdapterPosition();
+                itemClickListener.onItemClick(mListItem.get(position));
 
-                Toast.makeText(mContext.getApplicationContext(), "" + mListItem.get(position).getId(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(mContext, ViewMemo.class);
-                mContext.startActivity(intent);
+            }
+        });
 
+        vHolder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+                position = vHolder.getAdapterPosition();
+                Toast.makeText(mContext, mListItem.get(position).getId()+"길게 눌림",Toast.LENGTH_LONG).show();
+                return true;
             }
         });
 
@@ -62,15 +66,23 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
 
 
     @Override
-    public void onBindViewHolder(ListRecyclerViewAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         //ListItem listItem = mListItem.get(position);
 
         holder.date.setText(mListItem.get(position).getDate());
         holder.tag.setText(mListItem.get(position).getTag());
-        holder.address.setText(mListItem.get(position).getAddress());
+        holder.title.setText(mListItem.get(position).getTitle());
         holder.imageView.setClipToOutline(true);
-        bitmap = Bitmap.createScaledBitmap(mListItem.get(position).getMainImg(), 250,250,true);
-        holder.imageView.setImageBitmap(bitmap);
+        Typeface typeface = Typeface.createFromAsset(mContext.getAssets(), "font/air.ttf");
+        holder.title.setTypeface(typeface);
+
+        //bitmap = Bitmap.createScaledBitmap(mListItem.get(position).getMainImg(), 250,250,true);
+        Glide.with(mContext)
+                .load(mListItem.get(position).getUri1())
+                .centerCrop()
+                .error(R.drawable.no_image)
+                .into(holder.imageView);
+
 
     }
 
@@ -90,7 +102,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
         private ImageView imageView;
         private TextView date;
         private TextView tag;
-        private TextView address;
+        private TextView title;
 
 
 
@@ -99,7 +111,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             imageView = (ImageView)view.findViewById(R.id.imageView);
             date = (TextView)view.findViewById(R.id.date);
             tag = (TextView)view.findViewById(R.id.tag);
-            address = (TextView)view.findViewById(R.id.address);
+            title = (TextView)view.findViewById(R.id.title);
 
         }
 

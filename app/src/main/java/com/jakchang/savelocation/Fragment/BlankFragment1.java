@@ -1,6 +1,7 @@
 package com.jakchang.savelocation.Fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -15,16 +16,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakchang.savelocation.Adapter.CustomInfoWindowAdapter;
-import com.jakchang.savelocation.MemoModel;
+import com.jakchang.savelocation.Entity.MemoEntity;
 import com.jakchang.savelocation.R;
+import com.jakchang.savelocation.Repository.AppDatabase;
+import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.Utils.GpsTracker;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,7 +40,12 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     Context mContext;
     MarkerOptions markerOptions;
     Marker marker;
-    ArrayList<MemoModel> items;
+    List<MemoEntity> items;
+    DataHolder dataHolder;
+    AppDatabase db;
+    String tag,fromDate,toDate;
+
+
     public BlankFragment1(){}
     public BlankFragment1(Context context){this.mContext=context;}
     public static BlankFragment1 getInstance(){
@@ -76,7 +85,10 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        db= AppDatabase.getInstance(mContext);
+        fromDate = (String)dataHolder.popDataHolder("fromDate");
+        toDate = (String)dataHolder.popDataHolder("toDate");
+        items=db.MemoDao().selectAll(fromDate,toDate);
         mGoogleMap = googleMap;
         GpsTracker gps = new GpsTracker(getContext());
         lat = gps.getLatitude();
@@ -88,10 +100,31 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
         }*/
 
 
-        LatLng myLocation = new LatLng(lat, lng);
+        LatLng myLocation = new LatLng(37.561074454800696,127.06498436629771 );
+        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("장한평역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
+
+        myLocation = new LatLng(37.556834430048305,127.07939352840185 );
+        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("군자역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
+
+        myLocation = new LatLng(37.55196951972824,127.0894082263112  );
+        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("아차산역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
+
+
+        myLocation = new LatLng(37.5652454065023,127.08430867642163);
+        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("중곡역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
+
+
+        myLocation = new LatLng(37.547015240553065,127.07458466291428  );
+        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("어린이대공원역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
+
+
+        myLocation = new LatLng(lat,lng);
+        dataHolder.putDataHolder("lat", lat+"");
+        dataHolder.putDataHolder("lng",lng+"");
+
         markerOptions = new MarkerOptions();
-        markerOptions.position(new LatLng(lat, lng))
-                .title("내 위치");
+        markerOptions.position(myLocation)
+                .title("내 위치").icon(getMarkerIcon("#3993FF"));
 
         marker= mGoogleMap.addMarker(markerOptions);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15));
@@ -139,6 +172,8 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
                 markerOptions.snippet(getCurrentAddress(latitude,longitude));
                 markerOptions.position(new LatLng(latitude, longitude));
                 marker =  mGoogleMap.addMarker(markerOptions);
+
+               // Log.d("TAG",""+latitude+","+longitude);
             }
         });
 
@@ -148,6 +183,7 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         mMapView.onResume();
         super.onResume();
+
     }
     @Override
     public void onDestroy() {
@@ -197,6 +233,12 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
         Address address = addresses.get(0);
         return address.getAddressLine(0).toString()+"\n";
 
+    }
+
+    public BitmapDescriptor getMarkerIcon(String color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
 }

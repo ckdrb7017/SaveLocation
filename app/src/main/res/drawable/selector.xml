@@ -11,7 +11,7 @@
         </item>
         <item android:bottom="3dp">
             <shape >
-                <solid android:color="#ffff7a00" />
+                <solid android:color="#F4B183" />
             </shape>
         </item>
         <item android:bottom="6dp">

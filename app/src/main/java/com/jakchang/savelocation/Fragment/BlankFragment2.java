@@ -1,9 +1,8 @@
 package com.jakchang.savelocation.Fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,25 +14,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jakchang.savelocation.Adapter.ListRecyclerViewAdapter;
-import com.jakchang.savelocation.MemoModel;
+import com.jakchang.savelocation.Entity.MemoEntity;
+import com.jakchang.savelocation.Interface.ItemClickListener;
 import com.jakchang.savelocation.R;
+import com.jakchang.savelocation.Repository.AppDatabase;
+import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.Utils.RecyclerDecoration;
+import com.jakchang.savelocation.ViewMemo;
 
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-public class BlankFragment2 extends Fragment {
+import static android.app.Activity.RESULT_OK;
+
+public class BlankFragment2 extends Fragment implements ItemClickListener {
 
     View v;
     private RecyclerView mRecyclerView;
     private ListRecyclerViewAdapter recyclerViewAdapter;
-    private ArrayList<MemoModel> listItems;
+    private List<MemoEntity> listItems;
     Context mContext;
-    Bitmap bitmap;
-    private ArrayList<MemoModel> mArrayList;
-
+    DataHolder dataHolder;
+    String tag,fromDate,toDate;
+    AppDatabase db;
     public BlankFragment2(){}
-
+    public BlankFragment2(Context context){this.mContext=context;}
     public static BlankFragment2 getInstance(){
         return BlankFragment2.Fragment2Holder.INSTANCE;
     }
@@ -52,19 +57,15 @@ public class BlankFragment2 extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        listItems =new ArrayList<MemoModel>();
-        for(int i=0;i<10;i++) {
+        listItems =new ArrayList<MemoEntity>();
+        tag ="전체";
+        fromDate = (String)dataHolder.popDataHolder("fromDate");
+        toDate = (String)dataHolder.popDataHolder("toDate");
+        db= AppDatabase.getInstance(mContext);
+        listItems=db.MemoDao().selectAll(fromDate,toDate);
+        //GetData getData = new GetData();
+        //getData.execute();
 
-            try{
-                InputStream is = mContext.getContentResolver().openInputStream(Uri.parse("content://media/external/images/media/1163"));
-                bitmap = BitmapFactory.decodeStream(is);
-                //bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(),height,true);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-
-            listItems.add(new MemoModel(i,"37.5520829","127.0793734",bitmap," 주소 : ","위치","여행","2019-11-27",null,null,null,null,null));
-        }
     }
 
 
@@ -74,7 +75,7 @@ public class BlankFragment2 extends Fragment {
         View view = inflater.inflate(R.layout.activity_fragment02,container,false);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewAdapter = new ListRecyclerViewAdapter(getContext(),listItems);
+        recyclerViewAdapter = new ListRecyclerViewAdapter(getContext(),listItems,this);
         mRecyclerView.setAdapter(recyclerViewAdapter);
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(mRecyclerView.getContext(),new LinearLayoutManager(mContext).getOrientation());
@@ -91,14 +92,57 @@ public class BlankFragment2 extends Fragment {
 
 
     }
-    public void search(){
+    public void search(String tTag, String tFromDate, String tToDate){
         listItems.clear();
+        tag=tTag;
+        fromDate = tFromDate;
+        toDate =tToDate;
 
-        listItems.add(new MemoModel(0,"37.5520829","127.0793734",bitmap," 주소 : ","위치","여행","2019-11-27",null,null,null,null,null));
-        listItems.add(new MemoModel(0,"37.5520829","127.0793734",bitmap," 주소 : ","위치","여행","2019-11-27",null,null,null,null,null));
-        listItems.add(new MemoModel(0,"37.5520829","127.0793734",bitmap," 주소 : ","위치","여행","2019-11-27",null,null,null,null,null));
+        //recyclerViewAdapter = new ListRecyclerViewAdapter(getContext(),listItems,this);
+        //mRecyclerView.setAdapter(recyclerViewAdapter);
+
         recyclerViewAdapter.notifyDataSetChanged();
 
     }
+
+    @Override
+    public void onItemClick(MemoEntity memoEntity) {
+        //Toast.makeText(getApplicationContext(), "" + mListItem.get(position).getId(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getContext(), ViewMemo.class);
+        intent.putExtra("id",memoEntity.getId());
+        startActivityForResult(intent,2222);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            search(tag,fromDate,toDate);
+        }
+
+    }
+
+    public class GetData extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            recyclerViewAdapter.notifyDataSetChanged();
+            this.cancel(true);
+        }
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            return "";
+        }
+
+    }//GetData
+
 
 }

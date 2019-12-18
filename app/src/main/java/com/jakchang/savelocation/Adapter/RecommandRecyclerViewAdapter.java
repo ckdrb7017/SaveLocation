@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jakchang.savelocation.MemoModel;
+import com.jakchang.savelocation.Entity.MemoEntity;
 import com.jakchang.savelocation.R;
 import com.jakchang.savelocation.ViewMemo;
 
@@ -22,13 +22,12 @@ import java.util.List;
 public class RecommandRecyclerViewAdapter extends RecyclerView.Adapter<RecommandRecyclerViewAdapter.MyViewHolder> {
 
     Context mContext;
-   // List<MemoModel> mListItem;
-    List<MemoModel> mListItem;
+    List<MemoEntity> mListItem;
 
     int position;
     Uri uri;
 
-    public RecommandRecyclerViewAdapter(Context mContext, List<MemoModel> mListItem){
+    public RecommandRecyclerViewAdapter(Context mContext, List<MemoEntity> mListItem){
         this.mContext = mContext;
         this.mListItem = mListItem;
     }
@@ -66,7 +65,7 @@ public class RecommandRecyclerViewAdapter extends RecyclerView.Adapter<Recommand
 
         holder.date.setText(mListItem.get(position).getDate());
         holder.tag.setText(mListItem.get(position).getTag());
-        holder.address.setText(mListItem.get(position).getAddress());
+        holder.title.setText(mListItem.get(position).getTitle());
 
         uri = Uri.parse(mListItem.get(position).getUri1());
         try {
@@ -93,7 +92,7 @@ public class RecommandRecyclerViewAdapter extends RecyclerView.Adapter<Recommand
         private ImageView imageView;
         private TextView date;
         private TextView tag;
-        private TextView address;
+        private TextView title;
 
 
 
@@ -104,7 +103,7 @@ public class RecommandRecyclerViewAdapter extends RecyclerView.Adapter<Recommand
             imageView = (ImageView)view.findViewById(R.id.imageView);
             date = (TextView)view.findViewById(R.id.date);
             tag = (TextView)view.findViewById(R.id.tag);
-            address = (TextView)view.findViewById(R.id.address);
+            title = (TextView)view.findViewById(R.id.title);
 
         }
 
