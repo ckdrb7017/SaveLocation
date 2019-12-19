@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
 
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/imageview_rounding"
         android:scaleType="centerCrop" />
 

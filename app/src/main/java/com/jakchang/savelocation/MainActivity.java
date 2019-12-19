@@ -45,7 +45,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001, WRITING_RESULT_CODE=3001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private String[] permissions = {
@@ -148,15 +148,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void anim() {
         if (isFabOpen) {
             binding.fab1.startAnimation(fab_close);
-            //binding.fab2.startAnimation(fab_close);
             binding.fab1.setClickable(false);
-            //binding.fab2.setClickable(false);
             isFabOpen = false;
         } else {
             binding.fab1.startAnimation(fab_open);
-            //binding.fab2.startAnimation(fab_open);
             binding.fab1.setClickable(true);
-            //binding.fab2.setClickable(true);
             isFabOpen = true;
         }
     }
@@ -172,23 +168,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void onFab1Clicked(View view){
-        try{
 
-            Intent intent = new Intent(this,WritingMemo.class);
-            startActivity(intent);
+        BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.insert();
 
-        }catch (Exception e){
-
-        }
-        //closeFab();
     }
 
     public void openFab(){
         if (isFabOpen) {
             binding.fab1.startAnimation(fab_close);
-            //binding.fab2.startAnimation(fab_close);
             binding.fab1.setClickable(false);
-            //binding.fab2.setClickable(false);
             isFabOpen = false;
         }
     }
@@ -220,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBlank1Clicked(View view){
             dataHolder.getInstance().putDataHolder("fromDate", binding.fromDate.getText());
             dataHolder.getInstance().putDataHolder("toDate", binding.toDate.getText());
+        dataHolder.getInstance().putDataHolder("tag", binding.taglist.getSelectedItem().toString());
             changeFragment(new BlankFragment1(this));
             binding.mapBtn.setSelected(true);
             binding.listBtn.setSelected(false);
@@ -254,12 +244,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment.change();
         }
         else if(flag==LIST){
-            //BlankFragment2 fragment = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            BlankFragment2 fragment = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             String tag,fromDate,toDate;
             tag=binding.taglist.getSelectedItem().toString();
             fromDate = binding.fromDate.getText().toString();
             toDate = binding.toDate.getText().toString();
-            blankFragment2.getInstance().search(tag,fromDate,toDate);
+            fragment.search(tag,fromDate,toDate);
         }
         else if(flag==RECOMM){
 
@@ -385,21 +375,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
-
             case GPS_ENABLE_REQUEST_CODE:
-
-                //사용자가 GPS 활성 시켰는지 검사
                 if (checkLocationServicesStatus()) {
                     if (checkLocationServicesStatus()) {
-
                         Log.d("@@@", "onActivityResult : GPS 활성화 되있음");
                         checkRunTimePermission();
 
                         return;
                     }
                 }
+                break;
+            case WRITING_RESULT_CODE:
+                BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragment.change();
                 break;
         }
     }

@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -47,6 +49,14 @@ public class WritingMemo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_writememo);
         binding.setActivity(this);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point point =  new Point();
+        display.getSize(point);
+        binding.linearLayout2.getLayoutParams().height = point.y/8;
+        binding.titleLayout.getLayoutParams().height = point.y/17;
+        binding.text.getLayoutParams().height = point.y/2;
+
         uri = new String[4];
         dateInit();
         binding.date.setPaintFlags(binding.date.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
@@ -59,13 +69,7 @@ public class WritingMemo extends AppCompatActivity {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "font/air.ttf");
         binding.text.setTypeface(typeface);
 
-
-
-
         for(int i=0;i<4;i++) uri[i]="";
-
-
-
 
     }
 
@@ -111,7 +115,9 @@ public class WritingMemo extends AppCompatActivity {
         }
         startActivityForResult(intent.createChooser(intent, "이미지 선택"), requestCode);
     }
-
+    public void onCancelClicked(View v){
+        finish();
+    }
     public void onInsertClicked(View view){
         if(uri[0].equals("")){
             Toast.makeText(getApplicationContext(),"첫번째 이미지를 등록해주세요.", Toast.LENGTH_LONG).show();
@@ -134,6 +140,7 @@ public class WritingMemo extends AppCompatActivity {
         //dbHelper.insert(memoEntity);
         GetData getData = new GetData();
         getData.execute();
+        setResult(3001);
         Toast.makeText(getApplicationContext(),"메모가 등록되었습니다.",Toast.LENGTH_LONG).show();
         finish();
     }

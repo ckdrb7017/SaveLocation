@@ -2,7 +2,6 @@ package com.jakchang.savelocation.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class BlankFragment2 extends Fragment implements ItemClickListener {
 
-    View v;
+
     private RecyclerView mRecyclerView;
     private ListRecyclerViewAdapter recyclerViewAdapter;
     private List<MemoEntity> listItems;
@@ -63,8 +62,7 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
         toDate = (String)dataHolder.popDataHolder("toDate");
         db= AppDatabase.getInstance(mContext);
         listItems=db.MemoDao().selectAll(fromDate,toDate);
-        //GetData getData = new GetData();
-        //getData.execute();
+
 
     }
 
@@ -97,11 +95,15 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
         tag=tTag;
         fromDate = tFromDate;
         toDate =tToDate;
+        if(tag.equals("전체")) {
+            listItems = db.MemoDao().selectAll(fromDate, toDate);
+        }else{
+            listItems = db.MemoDao().selectAllByTag(tag,fromDate, toDate);
+        }
+        recyclerViewAdapter = new ListRecyclerViewAdapter(getContext(),listItems,this);
+        mRecyclerView.setAdapter(recyclerViewAdapter);
 
-        //recyclerViewAdapter = new ListRecyclerViewAdapter(getContext(),listItems,this);
-        //mRecyclerView.setAdapter(recyclerViewAdapter);
-
-        recyclerViewAdapter.notifyDataSetChanged();
+        //recyclerViewAdapter.notifyDataSetChanged();
 
     }
 
@@ -121,28 +123,6 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
         }
 
     }
-
-    public class GetData extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            recyclerViewAdapter.notifyDataSetChanged();
-            this.cancel(true);
-        }
-        @Override
-        protected String doInBackground(String... params) {
-
-
-            return "";
-        }
-
-    }//GetData
 
 
 }

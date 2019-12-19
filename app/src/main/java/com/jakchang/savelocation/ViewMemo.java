@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -52,6 +54,13 @@ public class ViewMemo extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_viewmemo);
         binding.setActivity(this);
 
+        Display display = getWindowManager().getDefaultDisplay();
+        Point point =  new Point();
+        display.getSize(point);
+        binding.linearLayout2.getLayoutParams().height = point.y/8;
+        binding.titleLayout.getLayoutParams().height = point.y/17;
+        binding.text.getLayoutParams().height = point.y/2;
+
         intent = getIntent();
         uri = new String[4];
         id = intent.getIntExtra("id",1);
@@ -62,9 +71,7 @@ public class ViewMemo extends AppCompatActivity {
         binding.imageView3.setClipToOutline(true);
 
         db = AppDatabase.getInstance(this);
-
         memoEntity = db.MemoDao().selectOne(id);
-
 
         uri[0]=memoEntity.getUri1();
         uri[1]=memoEntity.getUri2();
@@ -81,6 +88,12 @@ public class ViewMemo extends AppCompatActivity {
         }
 
         binding.date.setPaintFlags(binding.date.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+        binding.date.setText(memoEntity.getDate());
+        year =  binding.date.getText().toString().split("-")[0];
+        month = binding.date.getText().toString().split("-")[1];
+        day = binding.date.getText().toString().split("-")[2];
+        binding.date.setText(year+"-"+month+"-"+day);
+
         getImage(binding.imageView0,memoEntity.getUri1());
         getImage(binding.imageView1,memoEntity.getUri2());
         getImage(binding.imageView2,memoEntity.getUri3());
@@ -103,8 +116,7 @@ public class ViewMemo extends AppCompatActivity {
     public void onUpdateClicked(View v){
         setEnableFalse();
         Log.d("TAG",uri[0]+"\n"+uri[1]+"\n"+uri[2]+"\n"+uri[3]);
-        MemoEntity memoEntity = new MemoEntity();
-        memoEntity.setId(id);
+
         memoEntity.setDate(binding.date.getText().toString());
         memoEntity.setTag(binding.taglist.getSelectedItem().toString());
         memoEntity.setUri1(uri[0]);
@@ -113,10 +125,10 @@ public class ViewMemo extends AppCompatActivity {
         memoEntity.setUri4(uri[3]);
         memoEntity.setTitle(binding.title.getText().toString());
         memoEntity.setText(binding.text.getText().toString());
-        memoEntity.setFontType("0");
-        //dbHelper.update(memoEntity);
+        memoEntity.setFontType("font/"+binding.fontlist.getSelectedItem().toString()+".ttf");
+
         db.MemoDao().updateMemo(memoEntity);
-        Toast.makeText(getApplicationContext(),"수정이 완료됐습니다.",Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"수정이 완료됐습니다.",Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
     }
@@ -146,10 +158,6 @@ public class ViewMemo extends AppCompatActivity {
     public void dateInit(){
         currentTime = Calendar.getInstance().getTime();
         date_text= new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(currentTime);
-        year = date_text.split("-")[0];
-        month = date_text.split("-")[1];
-        day = date_text.split("-")[2];
-        binding.date.setText(year+"-"+month+"-"+day);
 
     }
 
@@ -231,7 +239,7 @@ public class ViewMemo extends AppCompatActivity {
         Glide.with(this)
                 .load(uri)
                 .centerCrop()
-                .override(300,300)
+                .override(500,500)
                 .error(R.drawable.no_image)
                 .into(imageView);
     }

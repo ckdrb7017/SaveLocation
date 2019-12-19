@@ -1,10 +1,12 @@
 package com.jakchang.savelocation.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,8 @@ import com.jakchang.savelocation.R;
 import com.jakchang.savelocation.Repository.AppDatabase;
 import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.Utils.GpsTracker;
+import com.jakchang.savelocation.Viewmodel.MemoViewModel;
+import com.jakchang.savelocation.WritingMemo;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,11 +44,12 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     Context mContext;
     MarkerOptions markerOptions;
     Marker marker;
-    List<MemoEntity> items;
+    List<MemoEntity> listItems;
     DataHolder dataHolder;
     AppDatabase db;
     String tag,fromDate,toDate;
-
+    MemoViewModel memoViewModel;
+    private static final int WRITING_RESULT_CODE=3001;
 
     public BlankFragment1(){}
     public BlankFragment1(Context context){this.mContext=context;}
@@ -60,7 +65,20 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fromDate = (String)dataHolder.popDataHolder("fromDate");
+        toDate = (String)dataHolder.popDataHolder("toDate");
+        tag = (String)dataHolder.popDataHolder("tag");
 
+        /*
+        memoViewModel = ViewModelProviders.of(this).get(MemoViewModel.class);
+        memoViewModel.init(mContext,fromDate,toDate);
+        memoViewModel.memoList().observe(this, new Observer<List<MemoEntity>>() {
+            @Override
+            public void onChanged(List<MemoEntity> memoEntities) {
+                listItems = memoViewModel.memoList().getValue();
+
+            }
+        });*/
 
     }
 
@@ -86,39 +104,24 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         db= AppDatabase.getInstance(mContext);
-        fromDate = (String)dataHolder.popDataHolder("fromDate");
-        toDate = (String)dataHolder.popDataHolder("toDate");
-        items=db.MemoDao().selectAll(fromDate,toDate);
+
+        listItems=db.MemoDao().selectAll(fromDate,toDate);
         mGoogleMap = googleMap;
         GpsTracker gps = new GpsTracker(getContext());
         lat = gps.getLatitude();
         lng= gps.getLongitude();
-        /*
-        for(MemoModel item : items) {
-            LatLng location = new LatLng(Double.parseDouble(item.getLatitude()),Double.parseDouble(item.getLongitude()));
-            //mGoogleMap.addMarker(new MarkerOptions().position(location).title(item.getName()).snippet("종류 : "+item.getKind()+"\n"+"거리 :"+item.getDistance()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-        }*/
 
+        for(MemoEntity entity:listItems){
+            Double latitude = Double.parseDouble(entity.getLatitude());
+            Double longitude = Double.parseDouble(entity.getLongitude());
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude,longitude))
+                    .title(entity.getTitle())
+                    .snippet("")
+                    .icon(getMarkerIcon("#F4B183")));
+        }
 
-        LatLng myLocation = new LatLng(37.561074454800696,127.06498436629771 );
-        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("장한평역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
-
-        myLocation = new LatLng(37.556834430048305,127.07939352840185 );
-        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("군자역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
-
-        myLocation = new LatLng(37.55196951972824,127.0894082263112  );
-        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("아차산역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
-
-
-        myLocation = new LatLng(37.5652454065023,127.08430867642163);
-        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("중곡역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
-
-
-        myLocation = new LatLng(37.547015240553065,127.07458466291428  );
-        mGoogleMap.addMarker(new MarkerOptions().position(myLocation).title("어린이대공원역").snippet("2019-12-01 모임").icon(getMarkerIcon("#F4B183")));
-
-
-        myLocation = new LatLng(lat,lng);
+        LatLng myLocation = new LatLng(lat,lng);
         dataHolder.putDataHolder("lat", lat+"");
         dataHolder.putDataHolder("lng",lng+"");
 
@@ -168,6 +171,9 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
                 markerOptions.title("위치");
                 Double latitude = point.latitude; // 위도
                 Double longitude = point.longitude; // 경도
+                lat = point.latitude;
+                lng = point.longitude;
+
                 // 마커의 스니펫(간단한 텍스트) 설정
                 markerOptions.snippet(getCurrentAddress(latitude,longitude));
                 markerOptions.position(new LatLng(latitude, longitude));
@@ -204,6 +210,32 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
 
     public void change(){
         mGoogleMap.clear();
+        if(tag.equals("전체")) {
+            listItems = db.MemoDao().selectAll(fromDate, toDate);
+        }else{
+            listItems = db.MemoDao().selectAllByTag(tag,fromDate, toDate);
+        }
+        Log.d("Tag",""+listItems.size());
+        for(MemoEntity entity:listItems){
+            markerOptions.title("위치");
+
+            Double latitude = Double.parseDouble(entity.getLatitude());
+            Double longitude = Double.parseDouble(entity.getLongitude());
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude,longitude))
+                    .title(entity.getTitle())
+                    .snippet("")
+                    .icon(getMarkerIcon("#F4B183")));
+
+        }
+
+    }
+
+    public void insert(){
+        dataHolder.putDataHolder("lat", lat+"");
+        dataHolder.putDataHolder("lng",lng+"");
+        Intent intent = new Intent(mContext, WritingMemo.class);
+        startActivityForResult(intent,3001);
     }
 
 
@@ -241,4 +273,15 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case WRITING_RESULT_CODE:
+                change();
+                break;
+        }
+
+    }
 }
