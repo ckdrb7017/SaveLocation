@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -33,9 +34,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.jakchang.savelocation.Fragment.BlankFragment1;
 import com.jakchang.savelocation.Fragment.BlankFragment2;
 import com.jakchang.savelocation.Fragment.HomeFragment;
+import com.jakchang.savelocation.Interface.RetrofitInterface;
 import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.databinding.ActivityMainBinding;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,9 +46,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int GPS_ENABLE_REQUEST_CODE = 2001, WRITING_RESULT_CODE=3001;
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001, WRITING_RESULT_CODE=3001,RECOVERY_RESULT_CODE=3002;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private String[] permissions = {
@@ -70,8 +76,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String selectedYear,selectedMonth,selectedDay;
     Date currentTime;
     int flag;
-
-
+    File file;
+    Retrofit2Service service;
+    RetrofitInterface retrofitInterface;
+    Call<ResponseBody> responseBodyCall;
+    String myFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         flag = HOME;
 
+        service = new Retrofit2Service();
+        retrofitInterface = service.getInstance().getService();
+        file= new File(getDatabasePath("location").getPath());
 
         dateInit();
         changeFragment(homeFragment.getInstance());
@@ -390,6 +402,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 fragment.change();
                 break;
+
+            case RECOVERY_RESULT_CODE:
+                Uri uri = data.getData();
+                Log.d("TAG",uri.getPath()+"");
+                Log.d("TAG",uri.toString());
+                File recoveryFIle = new File(uri.toString());
+                Log.d("TAG",recoveryFIle.length()+"");
+
+                break;
+
+
         }
     }
 
@@ -404,10 +427,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.backup:
-                //Toast.makeText(this, "item1 clicked..", Toast.LENGTH_SHORT).show();
+
+
+
                 break;
-            case R.id.recovery:
-                //Toast.makeText(this, "item2 clicked..", Toast.LENGTH_SHORT).show();
+
+            case R.id.garbage:
+
+
                 break;
 
         }
@@ -415,6 +442,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.drawLayout.closeDrawer(GravityCompat.START);
         return false;
     }
+
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -467,7 +496,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-
 
 
 }

@@ -15,7 +15,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "google_maps_key", "AIzaSyAjAvgNkQw_UbBrKGPJgD1-xVluy6sNuRU"
         }
+        debug {
+            resValue "string", "google_maps_key", "AIzaSyC6xF_Xyw6OhG0bnm6Yy8WLBXe-Q8tkEzs"
+        }
+
     }
     dataBinding{
         enabled = true
@@ -50,4 +55,13 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.1.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.2'
+    implementation 'com.google.android.material:material:1.0.0'
+
+    implementation "com.squareup.retrofit2:retrofit:2.5.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.5.0"
+
+
 }
