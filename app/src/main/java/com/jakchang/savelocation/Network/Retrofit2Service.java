@@ -1,4 +1,4 @@
-package com.jakchang.savelocation;
+package com.jakchang.savelocation.Network;
 
 import com.jakchang.savelocation.Interface.RetrofitInterface;
 

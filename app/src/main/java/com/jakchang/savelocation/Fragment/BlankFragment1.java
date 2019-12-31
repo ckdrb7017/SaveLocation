@@ -208,13 +208,17 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
         mMapView.onLowMemory();
     }
 
-    public void change(){
+    public void change(String mTag,String from,String to){
         mGoogleMap.clear();
-        if(tag.equals("전체")) {
+        tag=mTag;
+        fromDate = from;
+        toDate=to;
+        if(mTag.equals("전체")) {
             listItems = db.MemoDao().selectAll(fromDate, toDate);
         }else{
             listItems = db.MemoDao().selectAllByTag(tag,fromDate, toDate);
         }
+
         Log.d("Tag",""+listItems.size());
         for(MemoEntity entity:listItems){
             markerOptions.title("위치");
@@ -279,7 +283,7 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
 
         switch (requestCode) {
             case WRITING_RESULT_CODE:
-                change();
+                change(tag,fromDate,toDate);
                 break;
         }
 

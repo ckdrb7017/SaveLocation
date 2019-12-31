@@ -35,6 +35,7 @@ import com.jakchang.savelocation.Fragment.BlankFragment1;
 import com.jakchang.savelocation.Fragment.BlankFragment2;
 import com.jakchang.savelocation.Fragment.HomeFragment;
 import com.jakchang.savelocation.Interface.RetrofitInterface;
+import com.jakchang.savelocation.Network.Retrofit2Service;
 import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.databinding.ActivityMainBinding;
 
@@ -45,9 +46,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -71,16 +69,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DataHolder dataHolder;
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
-    final int HOME =1,MAP=2,LIST=3,RECOMM=4;
+    final int HOME =1,MAP=2,LIST=3,SEARCH=4;
     String date_text,year,month,day;
     String selectedYear,selectedMonth,selectedDay;
+    String tag,fromDate,toDate;
     Date currentTime;
     int flag;
     File file;
     Retrofit2Service service;
     RetrofitInterface retrofitInterface;
-    Call<ResponseBody> responseBodyCall;
-    String myFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        binding.fab.setImageResource(R.drawable.home_clicked);
-        binding.fab1.setImageResource(R.drawable.plusbutton);
+        binding.fab.setImageResource(R.drawable.plusbutton);
         binding.fromDate.setPaintFlags(binding.fromDate.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         binding.toDate.setPaintFlags(binding.fromDate.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         checkPermissions();
@@ -107,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         dateInit();
         changeFragment(homeFragment.getInstance());
+        binding.homeBtn.setSelected(true);
         initLayout();
 
     }
@@ -159,47 +157,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void anim() {
         if (isFabOpen) {
-            binding.fab1.startAnimation(fab_close);
-            binding.fab1.setClickable(false);
+            binding.fab.startAnimation(fab_close);
+            binding.fab.setClickable(false);
             isFabOpen = false;
         } else {
-            binding.fab1.startAnimation(fab_open);
-            binding.fab1.setClickable(true);
+            binding.fab.startAnimation(fab_open);
+            binding.fab.setClickable(true);
             isFabOpen = true;
         }
     }
 
 
-    public void onFabClicked(View view){
-        changeFragment(homeFragment.getInstance());
-        binding.mapBtn.setSelected(false);
-        binding.listBtn.setSelected(false);
-        binding.recommBtn.setSelected(false);
-        closeFab();
-        flag=HOME;
-    }
-
-    public void onFab1Clicked(View view){
-
-        BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        fragment.insert();
-
-    }
-
     public void openFab(){
         if (isFabOpen) {
-            binding.fab1.startAnimation(fab_close);
-            binding.fab1.setClickable(false);
+            binding.fab.startAnimation(fab_close);
+            binding.fab.setClickable(false);
             isFabOpen = false;
         }
     }
 
     public void closeFab(){
         if(isFabOpen){
-            binding.fab1.startAnimation(fab_close);
-            //binding.fab2.startAnimation(fab_close);
-            binding.fab1.setClickable(false);
-            //binding.fab2.setClickable(false);
+            binding.fab.startAnimation(fab_close);
+            binding.fab.setClickable(false);
             isFabOpen = false;
         }
     }
@@ -218,29 +198,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
-    public void onBlank1Clicked(View view){
-            dataHolder.getInstance().putDataHolder("fromDate", binding.fromDate.getText());
-            dataHolder.getInstance().putDataHolder("toDate", binding.toDate.getText());
+
+    public void onHomeClicked(View view){
+        changeFragment(homeFragment.getInstance());
+        binding.homeBtn.setSelected(true);
+        binding.mapBtn.setSelected(false);
+        binding.listBtn.setSelected(false);
+        closeFab();
+        flag=HOME;
+    }
+    public void onMapInsertClicked(View view){
+
+        BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.insert();
+
+    }
+    public void onMapClicked(View view){
+        dataHolder.getInstance().putDataHolder("fromDate", binding.fromDate.getText());
+        dataHolder.getInstance().putDataHolder("toDate", binding.toDate.getText());
         dataHolder.getInstance().putDataHolder("tag", binding.taglist.getSelectedItem().toString());
-            changeFragment(new BlankFragment1(this));
-            binding.mapBtn.setSelected(true);
-            binding.listBtn.setSelected(false);
-            binding.recommBtn.setSelected(false);
-            openFab();
-            anim();
-            flag = MAP;
+        changeFragment(new BlankFragment1(this));
+        binding.homeBtn.setSelected(false);
+        binding.mapBtn.setSelected(true);
+        binding.listBtn.setSelected(false);
+        openFab();
+        anim();
+        flag = MAP;
 
     }
 
-    public void onBlank2Clicked(View view){
+    public void onListClicked(View view){
 
         //blankFragment2.getInstance().setmContext(this);
         dataHolder.getInstance().putDataHolder("fromDate", binding.fromDate.getText());
         dataHolder.getInstance().putDataHolder("toDate", binding.toDate.getText());
-        changeFragment(new BlankFragment2(this));
+        changeFragment(blankFragment2.getInstance(this));
+        binding.homeBtn.setSelected(false);
         binding.mapBtn.setSelected(false);
         binding.listBtn.setSelected(true);
-        binding.recommBtn.setSelected(false);
         closeFab();
         flag = LIST;
 
@@ -253,19 +248,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if(flag==MAP){
             BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            fragment.change();
+
+            tag=binding.taglist.getSelectedItem().toString();
+            fromDate = binding.fromDate.getText().toString();
+            toDate = binding.toDate.getText().toString();
+            fragment.change(tag,fromDate,toDate);
         }
         else if(flag==LIST){
             BlankFragment2 fragment = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            String tag,fromDate,toDate;
+
             tag=binding.taglist.getSelectedItem().toString();
             fromDate = binding.fromDate.getText().toString();
             toDate = binding.toDate.getText().toString();
             fragment.search(tag,fromDate,toDate);
         }
-        else if(flag==RECOMM){
 
-        }
         //tf.testFunction();
 
 
@@ -397,10 +394,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         return;
                     }
                 }
-                break;
-            case WRITING_RESULT_CODE:
-                BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                fragment.change();
                 break;
 
             case RECOVERY_RESULT_CODE:

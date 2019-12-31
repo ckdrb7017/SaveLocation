@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jakchang.savelocation.Adapter.ListRecyclerViewAdapter;
 import com.jakchang.savelocation.Entity.MemoEntity;
+import com.jakchang.savelocation.Interface.Callback;
 import com.jakchang.savelocation.Interface.ItemClickListener;
 import com.jakchang.savelocation.R;
 import com.jakchang.savelocation.Repository.AppDatabase;
 import com.jakchang.savelocation.Utils.DataHolder;
+import com.jakchang.savelocation.Utils.Dialog;
 import com.jakchang.savelocation.Utils.RecyclerDecoration;
 import com.jakchang.savelocation.ViewMemo;
 
@@ -32,26 +34,17 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
     private RecyclerView mRecyclerView;
     private ListRecyclerViewAdapter recyclerViewAdapter;
     private List<MemoEntity> listItems;
+    static BlankFragment2 blankFragment2;
     Context mContext;
     DataHolder dataHolder;
     String tag,fromDate,toDate;
     AppDatabase db;
     public BlankFragment2(){}
     public BlankFragment2(Context context){this.mContext=context;}
-    public static BlankFragment2 getInstance(){
-        return BlankFragment2.Fragment2Holder.INSTANCE;
-    }
 
-    private static class  Fragment2Holder{
-        private static final BlankFragment2 INSTANCE = new BlankFragment2();
-    }
-
-    public Context getmContext() {
-        return mContext;
-    }
-
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
+    public static BlankFragment2 getInstance(Context context){
+        if(blankFragment2 ==null) blankFragment2 = new BlankFragment2(context);
+        return blankFragment2;
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -92,9 +85,9 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
     }
     public void search(String tTag, String tFromDate, String tToDate){
         listItems.clear();
-        tag=tTag;
-        fromDate = tFromDate;
-        toDate =tToDate;
+        tag=tTag==""?tag:tTag;
+        fromDate = tFromDate==""?fromDate:tFromDate;
+        toDate =tToDate==""?toDate:tToDate;
         if(tag.equals("전체")) {
             listItems = db.MemoDao().selectAll(fromDate, toDate);
         }else{
@@ -114,6 +107,23 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
         intent.putExtra("id",memoEntity.getId());
         startActivityForResult(intent,2222);
     }
+
+    @Override
+    public void onItemLongClick(MemoEntity memoEntity) {
+        Callback callback = new Callback() {
+            @Override
+            public void success() {
+                BlankFragment2.getInstance(getContext()).search("","","");
+            }
+            @Override
+            public void failure() {
+
+            }
+        };
+        Dialog.getInstance(mContext).deleteDialog(memoEntity.getId(),callback);
+
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

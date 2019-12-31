@@ -13,6 +13,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -44,6 +46,9 @@ public class WritingMemo extends AppCompatActivity {
     DataHolder dataHolder;
     String lat,lng;
     AppDatabase db;
+    ArrayAdapter spinnerAdapter;
+    Typeface typeface;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,10 +71,30 @@ public class WritingMemo extends AppCompatActivity {
         binding.imageView3.setClipToOutline(true);
         lat = (String) dataHolder.getDataHolder("lat");
         lng = (String) dataHolder.getDataHolder("lng");
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "font/air.ttf");
+        typeface = Typeface.createFromAsset(getAssets(), "font/air.ttf");
         binding.text.setTypeface(typeface);
 
         for(int i=0;i<4;i++) uri[i]="";
+
+
+
+        spinnerAdapter= new ArrayAdapter(this, R.layout.spinner_item, getResources().getStringArray(R.array.font_spinner));
+        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        binding.fontlist.setAdapter(spinnerAdapter);
+        binding.fontlist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                typeface = Typeface.createFromAsset(getAssets(), "font/"+binding.fontlist.getItemAtPosition(position)+".ttf");
+                binding.title.setTypeface(typeface);
+                binding.text.setTypeface(typeface);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
@@ -135,7 +160,7 @@ public class WritingMemo extends AppCompatActivity {
         memoEntity.setUri4(uri[3]);
         memoEntity.setTitle(binding.title.getText().toString());
         memoEntity.setText(binding.text.getText().toString());
-        memoEntity.setFontType("0");
+        memoEntity.setFontType("font/"+binding.fontlist.getSelectedItem().toString()+".ttf");
         memoEntity.setIsDeleted("true");
         //dbHelper.insert(memoEntity);
         GetData getData = new GetData();

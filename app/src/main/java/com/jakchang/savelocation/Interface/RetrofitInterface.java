@@ -1,19 +1,12 @@
 package com.jakchang.savelocation.Interface;
 
-import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Path;
-
 public interface RetrofitInterface {
+
+    /*
     @Multipart
     @POST("upload.php")
     Call<ResponseBody> upload(@Part MultipartBody.Part file);
 
     @GET("upload/{fileName}")
-    Call<ResponseBody> download(@Path("fileName") String fileName);
+    Call<ResponseBody> download(@Path("fileName") String fileName);*/
 }

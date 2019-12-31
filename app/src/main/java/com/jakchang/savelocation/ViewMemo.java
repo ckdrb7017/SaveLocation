@@ -7,12 +7,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,8 +25,10 @@ import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.jakchang.savelocation.Entity.MemoEntity;
+import com.jakchang.savelocation.Interface.Callback;
 import com.jakchang.savelocation.Repository.AppDatabase;
 import com.jakchang.savelocation.Utils.DataHolder;
+import com.jakchang.savelocation.Utils.Dialog;
 import com.jakchang.savelocation.databinding.ActivityViewmemoBinding;
 
 import java.text.SimpleDateFormat;
@@ -47,6 +51,8 @@ public class ViewMemo extends AppCompatActivity {
     Resources res;
     String[] resList;
     public static AppDatabase db;
+    ArrayAdapter spinnerAdapter;
+    Typeface typeface;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +93,15 @@ public class ViewMemo extends AppCompatActivity {
             }
         }
 
+        resList = res.getStringArray(R.array.font_spinner);
+        for(int i=0;i<resList.length;i++){
+            if(resList[i].equals(memoEntity.getFontType())){
+                binding.fontlist.setSelection(i);
+                break;
+            }
+        }
+
+
         binding.date.setPaintFlags(binding.date.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         binding.date.setText(memoEntity.getDate());
         year =  binding.date.getText().toString().split("-")[0];
@@ -100,9 +115,46 @@ public class ViewMemo extends AppCompatActivity {
         getImage(binding.imageView3,memoEntity.getUri4());
         binding.title.setText(memoEntity.getTitle());
         binding.text.setText(memoEntity.getText());
+        typeface = Typeface.createFromAsset(getAssets(), memoEntity.getFontType());
+        binding.title.setTypeface(typeface);
+        binding.text.setTypeface(typeface);
+
+
+        spinnerAdapter= new ArrayAdapter(this, R.layout.spinner_item, getResources().getStringArray(R.array.font_spinner));
+        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        binding.fontlist.setAdapter(spinnerAdapter);
+        binding.fontlist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                typeface = Typeface.createFromAsset(getAssets(), "font/"+binding.fontlist.getItemAtPosition(position)+".ttf");
+                binding.title.setTypeface(typeface);
+                binding.text.setTypeface(typeface);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         setEnableFalse();
         dateInit();
-        Log.d("TAG","id : "+memoEntity.getId()+", latitude : "+memoEntity.getLatitude()+", longitude : "+memoEntity.getLongitude());
+    }
+
+    public void onDeleteClicked(View v){
+
+        Callback callback = new Callback() {
+            @Override
+            public void success() {
+                setResult(RESULT_OK);
+                finish();
+            }
+            @Override
+            public void failure() {
+            }
+        };
+        Dialog.getInstance(this).deleteDialog(memoEntity.getId(),callback);
+        Dialog.getInstance(this).onCanceled();
 
     }
 
@@ -113,9 +165,9 @@ public class ViewMemo extends AppCompatActivity {
     public void onCancelClicked(View v){
         setEnableFalse();
     }
+
     public void onUpdateClicked(View v){
         setEnableFalse();
-        Log.d("TAG",uri[0]+"\n"+uri[1]+"\n"+uri[2]+"\n"+uri[3]);
 
         memoEntity.setDate(binding.date.getText().toString());
         memoEntity.setTag(binding.taglist.getSelectedItem().toString());
@@ -139,6 +191,7 @@ public class ViewMemo extends AppCompatActivity {
         binding.date.setEnabled(false);
         binding.title.setEnabled(false);
         binding.text.setEnabled(false);
+        binding.deleteBtn.setVisibility(View.VISIBLE);
         binding.modifyBtn.setVisibility(View.VISIBLE);
         binding.cancelBtn.setVisibility(View.GONE);
         binding.updateBtn.setVisibility(View.GONE);
@@ -149,6 +202,7 @@ public class ViewMemo extends AppCompatActivity {
         binding.date.setEnabled(true);
         binding.title.setEnabled(true);
         binding.text.setEnabled(true);
+        binding.deleteBtn.setVisibility(View.GONE);
         binding.modifyBtn.setVisibility(View.GONE);
         binding.cancelBtn.setVisibility(View.VISIBLE);
         binding.updateBtn.setVisibility(View.VISIBLE);

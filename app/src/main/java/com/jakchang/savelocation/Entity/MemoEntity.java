@@ -42,28 +42,6 @@ public class MemoEntity {
     public MemoEntity(){}
 
 
-/*
-    public MemoEntity(int id, String latitude, String longitude, String nation, String city, String address, String title, String tag
-            , String date, String uri1, String uri2, String uri3, String uri4, String text,String fontType,String isDeleted) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.nation = nation;
-        this.city = city;
-        this.address = address;
-        this.title = title;
-        this.tag = tag;
-        this.date = date;
-        this.uri1 = uri1;
-        this.uri2 = uri2;
-        this.uri3 = uri3;
-        this.uri4 = uri4;
-        this.text = text;
-        this.fontType=fontType;
-        this.isDeleted=isDeleted;
-    }*/
-
-
     public String getLatitude() {
         return latitude;
     }

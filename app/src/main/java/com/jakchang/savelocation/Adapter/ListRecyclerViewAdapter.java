@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +53,8 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
             @Override
             public boolean onLongClick(View v) {
                 position = vHolder.getAdapterPosition();
-                Toast.makeText(mContext, mListItem.get(position).getId()+"길게 눌림",Toast.LENGTH_LONG).show();
+                itemClickListener.onItemLongClick(mListItem.get(position));
+
                 return true;
             }
         });
@@ -73,7 +73,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
         holder.tag.setText(mListItem.get(position).getTag());
         holder.title.setText(mListItem.get(position).getTitle());
         holder.imageView.setClipToOutline(true);
-        Typeface typeface = Typeface.createFromAsset(mContext.getAssets(), "font/air.ttf");
+        Typeface typeface = Typeface.createFromAsset(mContext.getAssets(), mListItem.get(position).getFontType());
         holder.title.setTypeface(typeface);
 
         //bitmap = Bitmap.createScaledBitmap(mListItem.get(position).getMainImg(), 250,250,true);

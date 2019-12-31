@@ -133,31 +133,17 @@
 
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|left"
-                        android:layout_marginLeft="90dp"
-                        android:layout_marginBottom="10dp"
-                        android:clickable="false"
-                        android:onClick="@{activity::onFab1Clicked}"
-                        android:visibility="invisible"
-                        app:backgroundTint="@color/white"
-                        app:maxImageSize="56dp"
-                        app:srcCompat="@drawable/plusbutton" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/fab_selector"
-                        android:clickable="true"
-                        android:onClick="@{activity::onFabClicked}"
-                        android:src="@drawable/home_clicked"
-                        app:backgroundTint="?attr/colorBackgroundFloating"
-                        app:maxImageSize="56dp" />
+                        android:clickable="false"
+                        android:onClick="@{activity::onMapInsertClicked}"
+                        android:visibility="invisible"
+                        app:backgroundTint="@color/white"
+                        app:maxImageSize="56dp"
+                        app:srcCompat="@drawable/plusbutton" />
 
                 </FrameLayout>
 
@@ -169,12 +155,21 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:id="@+id/homeBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/selector"
+                        android:onClick="@{activity::onHomeClicked}"
+                        android:text="메인" />
+
+                    <Button
                         android:id="@+id/mapBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/selector"
-                        android:onClick="@{activity::onBlank1Clicked}"
+                        android:onClick="@{activity::onMapClicked}"
                         android:text="지도" />
 
                     <Button
@@ -183,16 +178,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/selector"
-                        android:onClick="@{activity::onBlank2Clicked}"
-                        android:text="목록" />
-
-                    <Button
-                        android:id="@+id/recommBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/selector"
-                        android:text="추천"
+                        android:onClick="@{activity::onListClicked}"
+                        android:text="목록"
 
                         />
 

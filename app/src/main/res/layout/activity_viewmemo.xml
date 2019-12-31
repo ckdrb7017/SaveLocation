@@ -168,7 +168,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:entries="@array/font_spinner"
-                        android:spinnerMode="dialog" />
+                        android:spinnerMode="dialog"
+                        />
 
                 </LinearLayout>
 
@@ -190,11 +191,19 @@
                     android:padding="3dp">
 
                     <Button
+                        android:id="@+id/deleteBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/buttonborder"
+                        android:onClick="@{activity::onDeleteClicked}"
+                        android:text="삭제하기" />
+                    <Button
                         android:id="@+id/modifyBtn"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/buttonborder"
                         android:onClick="@{activity::onModifyClicked}"
