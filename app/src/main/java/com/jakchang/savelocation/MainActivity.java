@@ -127,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 selectedYear = ""+year;
-                selectedMonth = ""+(month+1);
+                if(month<10) selectedMonth= "0"+(month+1);
+                else selectedMonth= ""+(month+1);
                 if(dayOfMonth<10) selectedDay= "0"+dayOfMonth;
                 else selectedDay= ""+dayOfMonth;
                 binding.fromDate.setText(selectedYear+"-"+selectedMonth+"-"+selectedDay);
@@ -144,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 selectedYear = ""+year;
-                selectedMonth = ""+(month+1);
+                if(month<10) selectedMonth= "0"+(month+1);
+                else selectedMonth= ""+(month+1);
                 if(dayOfMonth<10) selectedDay= "0"+dayOfMonth;
                 else selectedDay= ""+dayOfMonth;
                 binding.toDate.setText(selectedYear+"-"+selectedMonth+"-"+selectedDay);

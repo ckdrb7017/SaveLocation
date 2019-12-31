@@ -220,7 +220,8 @@ public class ViewMemo extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 selectedYear = ""+year;
-                selectedMonth = ""+(month+1);
+                if(month<10) selectedMonth= "0"+(month+1);
+                else selectedMonth= ""+(month+1);
                 if(dayOfMonth<10) selectedDay= "0"+dayOfMonth;
                 else selectedDay= ""+dayOfMonth;
                 binding.date.setText(selectedYear+"-"+selectedMonth+"-"+selectedDay);
