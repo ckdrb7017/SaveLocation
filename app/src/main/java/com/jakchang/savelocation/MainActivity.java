@@ -36,9 +36,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.jakchang.savelocation.Fragment.BlankFragment1;
 import com.jakchang.savelocation.Fragment.BlankFragment2;
 import com.jakchang.savelocation.Fragment.HomeFragment;
+import com.jakchang.savelocation.Interface.Callback;
 import com.jakchang.savelocation.Interface.RetrofitInterface;
 import com.jakchang.savelocation.Network.Retrofit2Service;
 import com.jakchang.savelocation.Utils.DataHolder;
+import com.jakchang.savelocation.Utils.Dialog;
 import com.jakchang.savelocation.databinding.ActivityMainBinding;
 
 import java.io.File;
@@ -510,7 +512,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(binding.drawLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Callback callback = new Callback() {
+                @Override
+                public void success() {
+                    finish();
+                }
+
+                @Override
+                public void failure() {
+
+                }
+            };
+            Dialog dialog = new Dialog(this);
+            dialog.exitDialog(callback);
         }
     }
 

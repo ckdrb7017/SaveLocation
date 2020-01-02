@@ -121,8 +121,9 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
 
             }
         };
-        Dialog.getInstance(mContext).deleteDialog(memoEntity.getId(),callback);
-        Dialog.getInstance(mContext).onCanceled();
+        Dialog dialog = new Dialog(mContext);
+        dialog.deleteDialog(memoEntity.getId(),callback);
+
 
     }
 

@@ -153,8 +153,8 @@ public class ViewMemo extends AppCompatActivity {
             public void failure() {
             }
         };
-        Dialog.getInstance(this).deleteDialog(memoEntity.getId(),callback);
-        Dialog.getInstance(this).onCanceled();
+        Dialog dialog = new Dialog(this);
+        dialog.deleteDialog(memoEntity.getId(),callback);
 
     }
 
