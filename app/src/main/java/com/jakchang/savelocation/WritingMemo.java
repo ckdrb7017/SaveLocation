@@ -58,7 +58,7 @@ public class WritingMemo extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point point =  new Point();
         display.getSize(point);
-        binding.linearLayout2.getLayoutParams().height = point.y/8;
+        binding.imageLayout.getLayoutParams().height = point.y/8;
         binding.titleLayout.getLayoutParams().height = point.y/17;
         binding.text.getLayoutParams().height = point.y/2;
 
@@ -162,7 +162,7 @@ public class WritingMemo extends AppCompatActivity {
         memoEntity.setTitle(binding.title.getText().toString());
         memoEntity.setText(binding.text.getText().toString());
         memoEntity.setFontType("font/"+binding.fontlist.getSelectedItem().toString()+".ttf");
-        memoEntity.setIsDeleted("true");
+        memoEntity.setIsDeleted("false");
         //dbHelper.insert(memoEntity);
         GetData getData = new GetData();
         getData.execute();

@@ -105,6 +105,7 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
         //Toast.makeText(getApplicationContext(), "" + mListItem.get(position).getId(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getContext(), ViewMemo.class);
         intent.putExtra("id",memoEntity.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(intent,2222);
     }
 
@@ -121,6 +122,7 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
             }
         };
         Dialog.getInstance(mContext).deleteDialog(memoEntity.getId(),callback);
+        Dialog.getInstance(mContext).onCanceled();
 
     }
 

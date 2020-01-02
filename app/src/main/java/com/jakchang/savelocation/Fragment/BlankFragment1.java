@@ -29,12 +29,14 @@ import com.jakchang.savelocation.R;
 import com.jakchang.savelocation.Repository.AppDatabase;
 import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.Utils.GpsTracker;
-import com.jakchang.savelocation.Viewmodel.MemoViewModel;
+import com.jakchang.savelocation.ViewMemo;
 import com.jakchang.savelocation.WritingMemo;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     View mView;
@@ -48,7 +50,8 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     DataHolder dataHolder;
     AppDatabase db;
     String tag,fromDate,toDate;
-    MemoViewModel memoViewModel;
+    String markerLat,markerLng,markerTitle;
+    int markerId;
     private static final int WRITING_RESULT_CODE=3001;
 
     public BlankFragment1(){}
@@ -116,8 +119,8 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
             Double longitude = Double.parseDouble(entity.getLongitude());
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(latitude,longitude))
-                    .title(entity.getTitle())
-                    .snippet("")
+                    .title(entity.getDate())
+                    .snippet(entity.getTitle())
                     .icon(getMarkerIcon("#F4B183")));
         }
 
@@ -127,7 +130,8 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
 
         markerOptions = new MarkerOptions();
         markerOptions.position(myLocation)
-                .title("내 위치").icon(getMarkerIcon("#3993FF"));
+                .title("내 위치")
+                .icon(getMarkerIcon("#3993FF"));
 
         marker= mGoogleMap.addMarker(markerOptions);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15));
@@ -140,46 +144,51 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
         mGoogleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this.getContext()));
         mGoogleMap.setMyLocationEnabled(true);
 
- /*
+
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                if(marker.getPosition().latitude!=mylat&&marker.getPosition().longitude!=mylng) {
-                  //  Intent intent = new Intent(getContext(), SeeSellerInfo.class);
+                if(marker.getPosition().latitude!=lat&&marker.getPosition().longitude!=lng) {
+                    Intent intent = new Intent(getContext(), ViewMemo.class);
+
                     markerLat = marker.getPosition().latitude + "";
                     markerLng = marker.getPosition().longitude + "";
                     markerTitle = marker.getTitle();
-                    markerUserId = "";
 
-                   //for (ListItem item : listItems) {
-                    //    if (item.getLat().equals(markerLat) && item.getLng().equals(markerLng) && item.getName().equals(markerTitle)) {
-                    //        markerUserId = item.getUser_id();
-                    //    }
-                   // }
 
-                   // intent.putExtra("user_id", markerUserId);
-                  //  startActivity(intent);
+                   for (MemoEntity item : listItems) {
+                       Log.d("TAG",markerLat+","+item.getLatitude());
+                       Log.d("TAG",markerLng+","+item.getLongitude());
+
+                       if (item.getLatitude().equals(markerLat) && item.getLongitude().equals(markerLng)) {
+                           markerId = item.getId();
+                           Log.d("TAG",""+markerId);
+                           break;
+                       }
+                    }
+
+                    intent.putExtra("id", markerId);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivityForResult(intent,3333);
 
                 }
             }
-        });*/
+        });
 
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
             @Override
             public void onMapClick(LatLng point) {
                 marker.remove();
-                markerOptions.title("위치");
+                markerOptions.title("내 위치");
                 Double latitude = point.latitude; // 위도
                 Double longitude = point.longitude; // 경도
                 lat = point.latitude;
                 lng = point.longitude;
 
-                // 마커의 스니펫(간단한 텍스트) 설정
-                markerOptions.snippet(getCurrentAddress(latitude,longitude));
+                //markerOptions.snippet(getCurrentAddress(latitude,longitude));
                 markerOptions.position(new LatLng(latitude, longitude));
                 marker =  mGoogleMap.addMarker(markerOptions);
 
-               // Log.d("TAG",""+latitude+","+longitude);
             }
         });
 
@@ -227,8 +236,8 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
             Double longitude = Double.parseDouble(entity.getLongitude());
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(latitude,longitude))
-                    .title(entity.getTitle())
-                    .snippet("")
+                    .title(entity.getDate())
+                    .snippet(entity.getTitle())
                     .icon(getMarkerIcon("#F4B183")));
 
         }
@@ -239,6 +248,7 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
         dataHolder.putDataHolder("lat", lat+"");
         dataHolder.putDataHolder("lng",lng+"");
         Intent intent = new Intent(mContext, WritingMemo.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(intent,3001);
     }
 
@@ -287,5 +297,11 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
                 break;
         }
 
+
+        switch (resultCode) {
+            case RESULT_OK:
+                change(tag,fromDate,toDate);
+                break;
+        }
     }
 }

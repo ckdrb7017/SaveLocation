@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,7 +51,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int GPS_ENABLE_REQUEST_CODE = 2001, WRITING_RESULT_CODE=3001,RECOVERY_RESULT_CODE=3002;
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001, WRITING_RESULT_CODE=3001,RECOVERY_RESULT_CODE=3002,GARBAGE=3333,MYIMAGE=2222;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private String[] permissions = {
@@ -76,9 +78,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Date currentTime;
     int flag;
     File file;
+    String myImagePath;
     Retrofit2Service service;
     RetrofitInterface retrofitInterface;
-
+    Bitmap bitmap;
+    ImageView myImage;
+    String getPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -386,6 +391,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Uri uri;
         switch (requestCode) {
             case GPS_ENABLE_REQUEST_CODE:
                 if (checkLocationServicesStatus()) {
@@ -399,16 +405,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case RECOVERY_RESULT_CODE:
-                Uri uri = data.getData();
-                Log.d("TAG",uri.getPath()+"");
-                Log.d("TAG",uri.toString());
+ /*              uri = data.getData();
                 File recoveryFIle = new File(uri.toString());
-                Log.d("TAG",recoveryFIle.length()+"");
 
+*/
                 break;
 
 
         }
+        switch (resultCode) {
+            case RESULT_OK:
+                if(flag==HOME){
+
+                }
+                else if(flag==MAP){
+                    BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    tag=binding.taglist.getSelectedItem().toString();
+                    fromDate = binding.fromDate.getText().toString();
+                    toDate = binding.toDate.getText().toString();
+                    fragment.change(tag,fromDate,toDate);
+                }
+                else if(flag==LIST){
+                    BlankFragment2 fragment = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    tag=binding.taglist.getSelectedItem().toString();
+                    fromDate = binding.fromDate.getText().toString();
+                    toDate = binding.toDate.getText().toString();
+                    fragment.search(tag,fromDate,toDate);
+                }
+                break;
+        }
+
+
     }
 
     public boolean checkLocationServicesStatus() {
@@ -422,14 +449,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.backup:
-
-
+                startActivity(new Intent(this,BackupActivity.class));
 
                 break;
 
             case R.id.garbage:
-
-
+                startActivityForResult(new Intent(this,GarbageActivity.class),GARBAGE);
                 break;
 
         }
@@ -437,7 +462,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.drawLayout.closeDrawer(GravityCompat.START);
         return false;
     }
-
 
 
     @Override
@@ -455,12 +479,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
+
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        // Handle your other action bar items...
 
         return super.onOptionsItemSelected(item);
     }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -40,7 +39,6 @@ import java.util.Locale;
 public class ViewMemo extends AppCompatActivity {
     ActivityViewmemoBinding binding;
     final int MAIN_IMAGE = 1000, SUB1_IMAGE = 1001,SUB2_IMAGE = 1002, SUB3_IMAGE = 1003;
-    Bitmap main_img,sub1_img,sub2_img,sub3_img;
     MemoEntity memoEntity ;
     Intent intent;
     String date_text,year,month,day;
@@ -59,7 +57,9 @@ public class ViewMemo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_viewmemo);
         binding.setActivity(this);
+        Intent intent =getIntent();
 
+        if(intent.getIntExtra("delete",0)!=0) binding.buttonLayout.setVisibility(View.INVISIBLE);
         Display display = getWindowManager().getDefaultDisplay();
         Point point =  new Point();
         display.getSize(point);
@@ -191,6 +191,7 @@ public class ViewMemo extends AppCompatActivity {
         binding.date.setEnabled(false);
         binding.title.setEnabled(false);
         binding.text.setEnabled(false);
+        binding.fontlist.setEnabled(false);
         binding.deleteBtn.setVisibility(View.VISIBLE);
         binding.modifyBtn.setVisibility(View.VISIBLE);
         binding.cancelBtn.setVisibility(View.GONE);
@@ -202,6 +203,7 @@ public class ViewMemo extends AppCompatActivity {
         binding.date.setEnabled(true);
         binding.title.setEnabled(true);
         binding.text.setEnabled(true);
+        binding.fontlist.setEnabled(true);
         binding.deleteBtn.setVisibility(View.GONE);
         binding.modifyBtn.setVisibility(View.GONE);
         binding.cancelBtn.setVisibility(View.VISIBLE);
@@ -258,6 +260,7 @@ public class ViewMemo extends AppCompatActivity {
                 }
             }
             intent = new Intent(getApplicationContext(),ImageViewPage.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 
         }

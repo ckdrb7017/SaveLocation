@@ -41,9 +41,15 @@
             </intent-filter>
         </activity>
         <activity android:name="com.jakchang.savelocation.MainActivity"/>
-        <activity android:name="com.jakchang.savelocation.ViewMemo"/>
-        <activity android:name="com.jakchang.savelocation.WritingMemo"/>
-        <activity android:name="com.jakchang.savelocation.ImageViewPage"/>
+        <activity android:name="com.jakchang.savelocation.ViewMemo"
+                   android:launchMode="singleTop" />
+        <activity android:name="com.jakchang.savelocation.WritingMemo"
+                   android:launchMode="singleTop" />
+        <activity android:name="com.jakchang.savelocation.ImageViewPage"
+                   android:launchMode="singleTop" />
+        <activity android:name="com.jakchang.savelocation.GarbageActivity"/>
+        <activity android:name="com.jakchang.savelocation.BackupActivity"
+            android:theme="@style/Popup" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

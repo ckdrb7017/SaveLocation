@@ -4,7 +4,7 @@
     <item
         android:id="@+id/backup"
         android:icon="@drawable/no_image"
-        android:title="백업하기"
+        android:title="백업 및 복원"
         />
 
     <item
