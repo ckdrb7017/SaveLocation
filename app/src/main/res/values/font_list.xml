@@ -2,8 +2,8 @@
 <resources>
     <string-array name="font_spinner">
         <item>air</item>
+        <item>dohyeon</item>
         <item>fromdamiM</item>
-        <item>HS겨울눈꽃체</item>
         <item>jua</item>
         <item>taehlim</item>
     </string-array>
