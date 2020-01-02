@@ -230,7 +230,7 @@ public class ViewMemo extends AppCompatActivity {
             }
         },Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
 
-        datePickerDialog.setMessage("메시지");
+        datePickerDialog.setMessage("날짜");
         datePickerDialog.show();
     }
 

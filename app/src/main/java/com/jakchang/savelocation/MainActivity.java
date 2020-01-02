@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         },Integer.parseInt(year), Integer.parseInt(month)-1, 1);
 
-        datePickerDialog.setMessage("메시지");
+        datePickerDialog.setMessage("날짜");
         datePickerDialog.show();
 
     }
