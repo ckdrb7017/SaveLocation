@@ -17,9 +17,10 @@
         android:background="@drawable/memo"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="한 장의 작은 메모장입니다. 내가 해야 될 일 혹은 일정 등 내가 쓰고 싶은 내용을 쓰시면 됩니다. "
         android:inputType="textMultiLine"
-        android:padding="10dp"
 
+        android:padding="10dp"
         android:textColor="@drawable/edittextcolor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
