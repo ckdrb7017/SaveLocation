@@ -27,11 +27,7 @@ public class HomeFragment extends Fragment {
     Switch aSwitch;
     int flag=1;
     String path ;
-    String guide ="앱 사용법 \n" +"\n" +
-            "메인을 클릭하면 내가 기록한 메인 메모내용을 볼수 있다. \n\n"+
-            "지도를 클릭하면 내가 기록한 메모들을 지도로 볼수있고 내가 기록하고 싶은 위치에 메모할수 있다.\n" +
-            "\n" +
-            "목록을 클릭하면 내가 기록한 메모들을 리스트로 볼수 있다. 리스트를 클릭하면 세부적인 내용이 나온다.\n";
+    String guide ="";
 
     public HomeFragment(){}
     public static HomeFragment getInstance(){

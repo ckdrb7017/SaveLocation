@@ -42,19 +42,27 @@
         </activity>
         <activity android:name="com.jakchang.savelocation.MainActivity"/>
         <activity android:name="com.jakchang.savelocation.ViewMemo"
+                   android:screenOrientation="portrait"
                    android:launchMode="singleTop" />
         <activity android:name="com.jakchang.savelocation.WritingMemo"
+                   android:screenOrientation="portrait"
                    android:launchMode="singleTop" />
         <activity android:name="com.jakchang.savelocation.ImageViewPage"
+                   android:screenOrientation="portrait"
                    android:launchMode="singleTop" />
-        <activity android:name="com.jakchang.savelocation.GarbageActivity"/>
+        <activity android:name="com.jakchang.savelocation.GarbageActivity"
+                   android:screenOrientation="portrait" />
         <activity android:name="com.jakchang.savelocation.BackupActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Popup" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.jakchang.savelocation.fileprovider"

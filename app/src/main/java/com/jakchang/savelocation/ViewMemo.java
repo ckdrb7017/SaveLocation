@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
@@ -93,13 +94,7 @@ public class ViewMemo extends AppCompatActivity {
             }
         }
 
-        resList = res.getStringArray(R.array.font_spinner);
-        for(int i=0;i<resList.length;i++){
-            if(resList[i].equals(memoEntity.getFontType())){
-                binding.fontlist.setSelection(i);
-                break;
-            }
-        }
+
 
 
         binding.date.setPaintFlags(binding.date.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
@@ -137,6 +132,15 @@ public class ViewMemo extends AppCompatActivity {
 
             }
         });
+
+        resList = res.getStringArray(R.array.font_spinner);
+        for(int i=0;i<resList.length;i++){
+            if(memoEntity.getFontType().equals("font/"+resList[i]+".ttf")){
+                binding.fontlist.setSelection(i);
+                break;
+            }
+        }
+
         setEnableFalse();
         dateInit();
     }
