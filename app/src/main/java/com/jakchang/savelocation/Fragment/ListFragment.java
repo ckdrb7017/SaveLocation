@@ -1,8 +1,10 @@
 package com.jakchang.savelocation.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,40 +30,34 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BlankFragment2 extends Fragment implements ItemClickListener {
+public class ListFragment extends Fragment implements ItemClickListener {
 
 
     private RecyclerView mRecyclerView;
     private ListRecyclerViewAdapter recyclerViewAdapter;
     private List<MemoEntity> listItems;
-    static BlankFragment2 blankFragment2;
+    static ListFragment listFragment;
     Context mContext;
     DataHolder dataHolder;
     String tag,fromDate,toDate;
     AppDatabase db;
-    public BlankFragment2(){}
-    public BlankFragment2(Context context){this.mContext=context;}
+    public ListFragment(){}
+    public ListFragment(Context context){this.mContext=context;}
 
-    public static BlankFragment2 getInstance(Context context){
-        if(blankFragment2 ==null) blankFragment2 = new BlankFragment2(context);
-        return blankFragment2;
+    public static ListFragment getInstance(Context context){
+        if(listFragment ==null) listFragment = new ListFragment(context);
+        return listFragment;
     }
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("TAG","onCreateView Fragment2");
         listItems =new ArrayList<MemoEntity>();
         tag ="전체";
         fromDate = (String)dataHolder.popDataHolder("fromDate");
         toDate = (String)dataHolder.popDataHolder("toDate");
         db= AppDatabase.getInstance(mContext);
         listItems=db.MemoDao().selectAll(fromDate,toDate);
-
-
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_fragment02,container,false);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
@@ -80,14 +76,13 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        Log.d("TAG","onViewCreated Fragment2");
 
     }
     public void search(String tTag, String tFromDate, String tToDate){
-        listItems.clear();
-        tag=tTag==""?tag:tTag;
-        fromDate = tFromDate==""?fromDate:tFromDate;
-        toDate =tToDate==""?toDate:tToDate;
+        tag=tTag.equals("")?tag:tTag;
+        fromDate = tFromDate.equals("")?fromDate:tFromDate;
+        toDate =tToDate.equals("")?toDate:tToDate;
         if(tag.equals("전체")) {
             listItems = db.MemoDao().selectAll(fromDate, toDate);
         }else{
@@ -114,14 +109,14 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
         Callback callback = new Callback() {
             @Override
             public void success() {
-                BlankFragment2.getInstance(getContext()).search("","","");
+                search(tag,fromDate,toDate);
             }
             @Override
             public void failure() {
 
             }
         };
-        Dialog dialog = new Dialog(mContext);
+        Dialog dialog = new Dialog(getContext());
         dialog.deleteDialog(memoEntity.getId(),callback);
 
 
@@ -138,4 +133,21 @@ public class BlankFragment2 extends Fragment implements ItemClickListener {
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof Activity) mContext = context;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("TAG","onDestroy Fragment2");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("TAG","onDetach Fragment2");
+    }
 }

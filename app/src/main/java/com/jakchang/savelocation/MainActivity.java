@@ -35,12 +35,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
-import com.jakchang.savelocation.Fragment.BlankFragment1;
-import com.jakchang.savelocation.Fragment.BlankFragment2;
+import com.jakchang.savelocation.Fragment.MapFragment;
+import com.jakchang.savelocation.Fragment.ListFragment;
 import com.jakchang.savelocation.Fragment.HomeFragment;
 import com.jakchang.savelocation.Interface.Callback;
 import com.jakchang.savelocation.Interface.RetrofitInterface;
-import com.jakchang.savelocation.Network.Retrofit2Service;
 import com.jakchang.savelocation.Utils.DataHolder;
 import com.jakchang.savelocation.Utils.Dialog;
 import com.jakchang.savelocation.databinding.ActivityMainBinding;
@@ -69,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ActionBarDrawerToggle drawerToggle;
     ActivityMainBinding binding;
-    BlankFragment1 blankFragment1;
-    BlankFragment2 blankFragment2;
+    MapFragment mapFragment;
+    ListFragment listFragment;
     HomeFragment homeFragment;
     DataHolder dataHolder;
     private Animation fab_open, fab_close;
@@ -82,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Date currentTime;
     int flag;
     File file;
-    String myImagePath;
-    Retrofit2Service service;
     RetrofitInterface retrofitInterface;
     Bitmap bitmap;
     ImageView myImage;
@@ -110,13 +107,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             checkRunTimePermission();
         }
         flag = HOME;
-
-        service = new Retrofit2Service();
-        retrofitInterface = service.getInstance().getService();
         file= new File(getDatabasePath("location").getPath());
 
         dateInit();
-        changeFragment(homeFragment.getInstance());
+        listFragment = new ListFragment(this);
         binding.homeBtn.setSelected(true);
         initLayout();
 
@@ -224,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public void onMapInsertClicked(View view){
 
-        BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         fragment.insert();
 
     }
@@ -232,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dataHolder.getInstance().putDataHolder("fromDate", binding.fromDate.getText());
         dataHolder.getInstance().putDataHolder("toDate", binding.toDate.getText());
         dataHolder.getInstance().putDataHolder("tag", binding.taglist.getSelectedItem().toString());
-        changeFragment(new BlankFragment1(this));
+        changeFragment(new MapFragment(this));
         binding.homeBtn.setSelected(false);
         binding.mapBtn.setSelected(true);
         binding.listBtn.setSelected(false);
@@ -243,11 +237,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void onListClicked(View view){
-
+        //blankFragment2 = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         //blankFragment2.getInstance().setmContext(this);
         dataHolder.getInstance().putDataHolder("fromDate", binding.fromDate.getText());
         dataHolder.getInstance().putDataHolder("toDate", binding.toDate.getText());
-        changeFragment(blankFragment2.getInstance(this));
+        changeFragment(listFragment);
         binding.homeBtn.setSelected(false);
         binding.mapBtn.setSelected(false);
         binding.listBtn.setSelected(true);
@@ -262,15 +256,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if(flag==MAP){
-            BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-
+            MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             tag=binding.taglist.getSelectedItem().toString();
             fromDate = binding.fromDate.getText().toString();
             toDate = binding.toDate.getText().toString();
             fragment.change(tag,fromDate,toDate);
         }
         else if(flag==LIST){
-            BlankFragment2 fragment = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            ListFragment fragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
             tag=binding.taglist.getSelectedItem().toString();
             fromDate = binding.fromDate.getText().toString();
@@ -427,14 +420,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
                 else if(flag==MAP){
-                    BlankFragment1 fragment = (BlankFragment1) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     tag=binding.taglist.getSelectedItem().toString();
                     fromDate = binding.fromDate.getText().toString();
                     toDate = binding.toDate.getText().toString();
                     fragment.change(tag,fromDate,toDate);
                 }
                 else if(flag==LIST){
-                    BlankFragment2 fragment = (BlankFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    ListFragment fragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     tag=binding.taglist.getSelectedItem().toString();
                     fromDate = binding.fromDate.getText().toString();
                     toDate = binding.toDate.getText().toString();

@@ -38,7 +38,7 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     View mView;
     MapView mMapView;
     GoogleMap mGoogleMap;
@@ -54,15 +54,15 @@ public class BlankFragment1 extends Fragment implements OnMapReadyCallback {
     int markerId;
     private static final int WRITING_RESULT_CODE=3001;
 
-    public BlankFragment1(){}
-    public BlankFragment1(Context context){this.mContext=context;}
-    public static BlankFragment1 getInstance(){
+    public MapFragment(){}
+    public MapFragment(Context context){this.mContext=context;}
+    public static MapFragment getInstance(){
         return Fragment1Holder.INSTANCE;
     }
 
 
     private static class  Fragment1Holder{
-        private static final BlankFragment1 INSTANCE = new BlankFragment1();
+        private static final MapFragment INSTANCE = new MapFragment();
     }
 
     public void onCreate(Bundle savedInstanceState) {

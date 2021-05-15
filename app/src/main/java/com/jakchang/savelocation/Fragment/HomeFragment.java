@@ -1,6 +1,7 @@
 package com.jakchang.savelocation.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,13 +58,9 @@ public class HomeFragment extends Fragment {
         file.mkdir();
         String getText = readFile(path);
 
-        if(getText.equals("")){
-            guideText.setText(guide);
-            writeFile(path);
-        }else{
+        if(!getText.equals("\n")){
             guideText.setText(getText);
-           // Log.d("TAG",getText);
-
+            //writeFile(path);
         }
 
         aSwitch.setOnClickListener(new View.OnClickListener() {
@@ -116,4 +113,15 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("TAG","onDestroy Home");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("TAG","onDetach Home");
+    }
 }
