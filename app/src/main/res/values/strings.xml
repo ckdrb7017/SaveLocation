@@ -2,9 +2,6 @@
     <string name="app_name">위치저장소</string>
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
-    <string name="admob_app_id">ca-app-pub-2342488509244305~9595250777</string>
-    <string name="banner_ad_unit_id">ca-app-pub-2342488509244305/1058285201</string>
-    <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
 
 
 </resources>
